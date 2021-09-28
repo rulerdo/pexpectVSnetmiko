@@ -6,7 +6,6 @@ import sys
 def pe_show_command(device,command):
 
     enable_prompt = device["host"] + '#'
-    config_promt = device["host"] + '(config)#'
     ssh = pexpect.spawn(f'ssh -l {device["username"]} -p {device["port"]} {device["ip"]}',encoding='utf-8')
 
     # ssh.logfile_read = sys.stdout.buffer  # This line will show output while connecting
@@ -24,9 +23,9 @@ def pe_show_command(device,command):
             result = result + ssh.before
             ssh.send(' ')
         elif ret == 1:
+            result = result + ssh.before
             break
     
-    result = result + ssh.before
     ssh.close()
 
     return result
