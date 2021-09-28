@@ -34,11 +34,11 @@ def px_show_command(device,command):
 
 def pxssh_show_command(device,command):
 
-    s = pxssh.pxssh(encoding='utf-8')
-    s.PROMPT = device["host"] + '#'
+    ssh = pxssh.pxssh(encoding='utf-8')
+    ssh.PROMPT = device["host"] + '#'
 
-    s.login(device["ip"],device["username"],device["password"],port=device["port"],auto_prompt_reset=False)
-    s.sendline(command)
+    ssh.login(device["ip"],device["username"],device["password"],port=device["port"],auto_prompt_reset=False)
+    ssh.sendline(command)
     patterns = ['--More--', s.PROMPT]
     result = str()
 
@@ -51,9 +51,10 @@ def pxssh_show_command(device,command):
             result = result + s.before
             break
     
-    s.logout()
-    
+    ssh.logout()
+
     return result
+
 
 def nm_show_command(device,command):
 
