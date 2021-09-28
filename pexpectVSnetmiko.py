@@ -42,7 +42,7 @@ def nm_show_command(device,command):
 
 if __name__ == '__main__':
 
-    c8000v  = {
+    device  = {
             'device_type': 'cisco_ios',
             'ip': '10.88.255.98',
             'port': 22051,
@@ -53,17 +53,17 @@ if __name__ == '__main__':
 
     
     print('\nTest device:')
-    for k,v in c8000v.items():
+    for k,v in device.items():
         print(k + ': ' + str(v))
 
     command = input('\nType your command: ')
 
     print('\nUsing PEXPECT')
     print('=====================\n')
-    output = pe_show_command(c8000v,command)
+    output = pe_show_command(device,command)
     print(output)
 
     print('\nUsing NETMIKO')
     print('=====================\n')
-    output = nm_show_command(c8000v,command)
+    output = nm_show_command(device,command)
     print(output)
