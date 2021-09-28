@@ -6,16 +6,16 @@ import sys
 def pe_show_command(device,command):
 
     enable_prompt = device["host"] + '#'
-    ssh = pexpect.spawn(f'ssh -l {device["username"]} -p {device["port"]} {device["ip"]}')
+    ssh = pexpect.spawn(f'ssh -l {device["username"]} -p {device["port"]} {device["ip"]}',encoding='utf-8')
 
     # ssh.logfile_read = sys.stdout.buffer  # This line will show output while connecting
     
     ssh.expect('Password:')
     ssh.sendline(device["password"])
     ssh.expect_exact(enable_prompt)
-    ssh.sendline('show ip int brief')
+    ssh.sendline(command)
     ssh.expect_exact(enable_prompt)
-    result = (ssh.before).decode("utf-8")
+    result = ssh.before
     ssh.close()
 
     return result
