@@ -1,9 +1,10 @@
 from netmiko import ConnectHandler
 import pexpect
+from pexpect import pxssh
 import sys
 
 
-def pe_show_command(device,command):
+def px_show_command(device,command):
 
     enable_prompt = device["host"] + '#'
     ssh = pexpect.spawn(f'ssh -l {device["username"]} -p {device["port"]} {device["ip"]}',encoding='utf-8')
@@ -30,6 +31,29 @@ def pe_show_command(device,command):
 
     return result
 
+
+def pxssh_show_command(device,command):
+
+    s = pxssh.pxssh(encoding='utf-8')
+    s.PROMPT = device["host"] + '#'
+
+    s.login(device["ip"],device["username"],device["password"],port=device["port"],auto_prompt_reset=False)
+    s.sendline(command)
+    patterns = ['--More--', s.PROMPT]
+    result = str()
+
+    while True:
+        ret = s.expect(patterns)
+        if ret == 0:
+            result = result + s.before
+            s.send(' ')
+        elif ret == 1:
+            result = result + s.before
+            break
+    
+    s.logout()
+    
+    return result
 
 def nm_show_command(device,command):
 
@@ -60,7 +84,12 @@ if __name__ == '__main__':
 
     print('\nUsing PEXPECT')
     print('=====================\n')
-    output = pe_show_command(device,command)
+    output = px_show_command(device,command)
+    print(output)
+
+    print('\nUsing PXSSH')    
+    print('=====================\n')
+    output = px_show_command(device,command)
     print(output)
 
     print('\nUsing NETMIKO')
